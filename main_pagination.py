@@ -1,9 +1,17 @@
-import requests
-import json
+import requests #HTTP requests
+import json 
 from config import cookies, headers
-import os
+import os # interacting with the file system
 import math
 def get_data():
+    """
+Initializes parameters for the HTTP request.
+Checks if the data directory exists, creates it if not.
+Creates a requests.Session() to maintain a persistent HTTP session.
+Makes an initial GET request to fetch the total number of products and calculates the number of pages.
+Iterates over each page, fetching product IDs, descriptions, and prices.
+Saves this data into three separate JSON files: 1_products_ids.json, 2_products_descriptions.json, and 3_products_prices.json.
+    """
     
     params = {
         'categoryId': '118',
@@ -98,7 +106,7 @@ def get_data():
     with open('data/1_products_ids.json', 'w') as file:
         json.dump(products_ids, file, indent=4, ensure_ascii=False)
     
-    with open('data/2_products_descriptions.json', 'w') as file:
+    with open('data/2_products_descriptions.json', 'w', encoding='utf-8') as file:
         json.dump(products_description, file, indent=4, ensure_ascii=False)
 
     with open('data/3_products_prices.json', 'w') as file:
@@ -106,7 +114,12 @@ def get_data():
 
 
 def get_result():
-    with open('data/2_products_descriptions.json') as file:
+    """
+Reads the product descriptions and prices from the JSON files.
+Merges the price information into the product descriptions.
+Saves the merged data into 4_result.json.
+    """
+    with open('data/2_products_descriptions.json','r', encoding='utf-8') as file:
         products_data = json.load(file)
     
     with open('data/3_products_prices.json') as file:
@@ -125,7 +138,7 @@ def get_result():
             item['item_bonus'] = prices.get('item_bonus')
             item['item_link'] = f'https://www.mvideo.ru/products/{item.get("nameTranslit")}-{product_id}'
     
-    with open('data/4_result.json', 'w') as file:
+    with open('data/4_result.json', 'w', encoding='utf-8') as file:
         json.dump(products_data, file, indent=4, ensure_ascii=False)
 
 def main():
